@@ -2,7 +2,7 @@ import whatsappIcon from "../../assets/icons/whatsapp.svg";
 import instagramIcon from "../../assets/icons/instagram.svg";
 import tiktokIcon from "../../assets/icons/tiktok.svg";
 import linkedinIcon from "../../assets/icons/linkedin.svg";
-import "./links.css";
+import "./Links.css";
 
 function Links() {
   return (
