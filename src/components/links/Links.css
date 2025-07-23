@@ -1,0 +1,33 @@
+.link_group a {
+  margin-top: 10px;
+  display: grid;
+  gap: 26px;
+  text-decoration: none;
+}
+
+.link_btn {
+  position: relative;
+  height: 70px;
+  width: 100%;
+  background-color: #fafafa;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.link_icon {
+  position: absolute;
+  left: 16px;
+  width: 20px;
+  height: 20px;
+}
+
+.link_btn_text {
+  color: #212121;
+  font-weight: 700;
+  text-align: center;
+}

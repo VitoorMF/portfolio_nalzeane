@@ -1,0 +1,47 @@
+.video_carrousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 40px;
+  position: relative;
+}
+
+.video_wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.video_player {
+  position: absolute; /* Position all videos absolutely within the wrapper */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures video covers the area without distortion */
+  transition: opacity 0.5s ease; /* Smooth fade in/out */
+  opacity: 0; /* Hidden by default */
+  z-index: 1; /* Default z-index */
+}
+
+.video_player.visible {
+  opacity: 1; /* Visible when active */
+  z-index: 2; /* Bring active video to front */
+}
+
+.arrow {
+  background: none;
+  border: none;
+  font-size: 40px;
+  cursor: pointer;
+  color: #333;
+  transition: transform 0.2s ease;
+}
+
+.arrow:hover {
+  transform: scale(1.2);
+}

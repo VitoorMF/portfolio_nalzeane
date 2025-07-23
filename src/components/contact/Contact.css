@@ -1,0 +1,89 @@
+.email_form_field {
+  background: #fafafa;
+  width: 100%;
+  height: 50px;
+  max-width: 400px;
+  margin: 10px auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-radius: 10px;
+}
+
+.email_form_field input {
+  height: 100%;
+  border: none;
+  border-radius: 10px;
+  padding: 0 15px;
+  font-size: 16px;
+  color: #212121;
+  background-color: #fafafa;
+}
+.email_form_field input::placeholder {
+  color: #a1a1aa;
+}
+.email_form_field input:focus {
+  outline: none;
+}
+.email_form_field input:focus::placeholder {
+  color: #fafafa;
+}
+
+.send_btn {
+  background-color: #212121;
+  margin: 3px;
+  width: 100px;
+  height: auto;
+  background-image: url("./assets/icons/send.svg");
+  background-size: cover;
+  cursor: pointer;
+
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.contacts_row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.contacts_row a {
+  flex: 1;
+  max-width: 300px;
+  width: 100%;
+  display: flex;
+}
+
+.contact_btn {
+  height: 50px;
+  flex: 1;
+  max-width: 300px;
+  width: 100%;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.contact_btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.contact_btn:hover {
+  transform: scale(1.1);
+}
+
+.phone {
+  background-color: #b24141;
+}
+.whatsapp {
+  background-color: #25d366;
+}
