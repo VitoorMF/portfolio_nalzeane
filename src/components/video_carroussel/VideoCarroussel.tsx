@@ -1,72 +1,102 @@
 import { useState, useRef, useEffect } from "react";
 import "./VideoCarroussel.css";
-import nanaVideo from "../../assets/videos/nana_video.mp4";
-import nanaVideo2 from "../../assets/videos/nana_video2.mp4";
+import { getDownloadURL, getStorage, listAll, ref } from "firebase/storage";
+import AddVideoDialog from "../dialogs/addVideoDialog";
 
-const videoList = [nanaVideo, nanaVideo2];
-
-function VideoCarrousel() {
+function VideoCarrousel({ isAdmin = false }) {
+  const [videoList, setVideoList] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const [addVideoDialogOpen, setAddVideoDialogOpen] = useState(false);
 
-  // Initialize videoRefs array based on videoList length
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const storage = getStorage();
+  const videosFolder = ref(storage, "videos/");
+
+  // 1) função que busca todos os vídeos do storage
+  const fetchVideos = () =>
+    listAll(videosFolder)
+      .then((res) => Promise.all(res.items.map((i) => getDownloadURL(i))))
+      .then((urls) => setVideoList(urls))
+      .catch((err) => console.error("Erro listando vídeos:", err));
+
+  // carregamento inicial
   useEffect(() => {
-    videoRefs.current = videoRefs.current.slice(0, videoList.length);
+    fetchVideos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // sincroniza refs
   useEffect(() => {
-    videoRefs.current.forEach((video, index) => {
-      if (video) {
-        if (index === currentIndex) {
-          video.play();
-        } else {
-          // Pause and reset other videos
-          video.pause();
-          video.currentTime = 0;
-        }
+    videoRefs.current = videoRefs.current.slice(0, videoList.length);
+  }, [videoList]);
+
+  // play/pause automático
+  useEffect(() => {
+    videoRefs.current.forEach((vid, idx) => {
+      if (!vid) return;
+      if (idx === currentIndex) vid.play();
+      else {
+        vid.pause();
+        vid.currentTime = 0;
       }
     });
   }, [currentIndex]);
 
-  const handlePrev = () => {
-    const next = currentIndex === 0 ? videoList.length - 1 : currentIndex - 1;
-    setCurrentIndex(next);
-  };
+  const handlePrev = () =>
+    setCurrentIndex((i) => (i === 0 ? videoList.length - 1 : i - 1));
+  const handleNext = () =>
+    setCurrentIndex((i) => (i === videoList.length - 1 ? 0 : i + 1));
 
-  const handleNext = () => {
-    const next = currentIndex === videoList.length - 1 ? 0 : currentIndex + 1;
-    setCurrentIndex(next);
+  // abre o diálogo
+  const handleAddClick = () => setAddVideoDialogOpen(true);
+
+  // quando o diálogo terminar o upload com sucesso:
+  const handleCreate = () => {
+    // você pode usar data.src se precisar algo extra
+    fetchVideos(); // recarrega a lista
+    setAddVideoDialogOpen(false); // fecha o diálogo
   };
 
   return (
     <section className="video_carrousel">
-      <button className="arrow left" onClick={handlePrev}>
-        ‹
-      </button>
-
-      <div className="video_wrapper">
-        {videoList.map((videoSrc, index) => (
-          <video
-            key={videoSrc} 
-            ref={(el) => {
-              videoRefs.current[index] = el;
-            }}
-            className={`video_player ${
-              index === currentIndex ? "visible" : ""
-            }`}
-            src={videoSrc}
-            controls
-            autoPlay={index === currentIndex} 
-            muted
-            loop
-            playsInline 
-          />
-        ))}
+      <div className="video_arrows">
+        <button className="arrow left" onClick={handlePrev}>
+          ‹
+        </button>
+        <div className="video_wrapper">
+          {videoList.map((src, idx) => (
+            <video
+              key={src}
+              ref={(el) => {
+                videoRefs.current[idx] = el;
+              }}
+              className={`video_player ${
+                idx === currentIndex ? "visible" : ""
+              }`}
+              src={src}
+              controls
+              muted
+              loop
+              playsInline
+            />
+          ))}
+        </div>
+        <button className="arrow right" onClick={handleNext}>
+          ›
+        </button>
       </div>
 
-      <button className="arrow right" onClick={handleNext}>
-        ›
-      </button>
+      <AddVideoDialog
+        open={addVideoDialogOpen}
+        onClose={() => setAddVideoDialogOpen(false)}
+        onCreate={handleCreate}
+      />
+
+      {isAdmin && (
+        <div className="add_field" onClick={handleAddClick}>
+          <div className="add">Adicionar</div>
+        </div>
+      )}
     </section>
   );
 }

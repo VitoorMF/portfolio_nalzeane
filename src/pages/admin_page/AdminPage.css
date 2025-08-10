@@ -1,0 +1,36 @@
+.admin-page {
+  width: 100vw;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.add_field {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.add {
+  width: 100px;
+  height: 40px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  cursor: pointer;
+
+  color: #212121;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title_adm {
+  text-align: start;
+}
+
+.subtitle_adm {
+  text-align: start;
+}

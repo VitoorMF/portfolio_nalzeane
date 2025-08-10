@@ -1,7 +1,8 @@
-.link_group a {
+.link_group {
   margin-top: 10px;
+  padding-bottom: 20px;
   display: grid;
-  gap: 26px;
+  gap: 10px;
   text-decoration: none;
 }
 
