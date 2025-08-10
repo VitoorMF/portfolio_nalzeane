@@ -1,5 +1,5 @@
 // src/pages/AdminPage.tsx
-import { signOut } from "@firebase/auth";
+import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
 import { auth } from "../../../firebase/config";
