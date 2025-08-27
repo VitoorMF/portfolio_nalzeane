@@ -63,7 +63,7 @@ function HomePage() {
         <p className="footer_text">
           © 2025 Nalzeane Normanha | Todos os direitos reservados.
         </p>
-        <p className="footer_text">12.345.678/0001-90</p>
+        <p className="footer_text">011.672.751-95</p>
       </footer>
     </>
   );
