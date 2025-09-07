@@ -1,87 +1,205 @@
-.products {
-  overflow-x: hidden;
+/* =======================
+   Products – Carousel CSS
+   ======================= */
 
-  flex-direction: column;
-  align-items: center;
+/* Tamanho do slide por breakpoint */
+.products {
+  --product-slide: 160px;
+}
+@media (min-width: 480px) {
+  .products {
+    --product-slide: 180px;
+  }
+}
+@media (min-width: 1024px) {
+  .products {
+    --product-slide: 200px;
+  }
 }
 
-.product_carrousel {
+/* Wrapper do carrossel (para setas e fades) */
+.carousel_wrap {
+  position: relative;
+  margin-inline: auto;
+}
+
+/* Trilho rolável com snap + swipe */
+.carousel_track {
   display: flex;
+  gap: 12px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-  gap: 20px;
-  padding: 20px;
-
-  width: 100%;
-  max-width: 85vw;
-  box-sizing: border-box;
-
+  scroll-padding-inline: 16px;
+  padding: 8px 16px 12px;
+  overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+.carousel_track::-webkit-scrollbar {
+  /* Chrome/Safari */
+  display: none;
 }
 
-.product_carrousel a {
-  text-decoration: none;
-  color: inherit;
+/* Slide: controla o tamanho do card */
+.product_slide {
+  max-width: 150px;
+  flex: 0 0 var(--product-slide);
+  scroll-snap-align: center;
+  display: grid;
+  place-items: stretch;
+  border: 0;
+  background: transparent;
+  padding: 0;
 }
 
-@supports (scrollbar-width: none) {
-  .product_carrousel {
-    scrollbar-width: auto; /* padrão para desktop */
-  }
-
-  @media (pointer: coarse) {
-    .product_carrousel {
-      scrollbar-width: none;
-    }
-
-    .product_carrousel::-webkit-scrollbar {
-      display: none;
-    }
-  }
-}
-
-.product {
-  flex: 0 0 auto;
-  width: 100px;
-  max-width: 100px;
-  border-radius: 10px;
-  scroll-snap-align: start;
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-
+/* Card do produto (quadrado) */
+.product_tile,
+.add_tile {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0f0f0f;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
   cursor: pointer;
 }
 
-.product img {
-  height: 100px;
-  width: 100px;
-  object-fit: contain;
-  border-radius: 8px;
-  background-color: #ffffff;
-}
-
-.product_description {
-  text-align: start;
-  font-weight: 700;
-  color: #fafafa;
-  padding: 0;
-  font-size: 14px;
-  margin: 0;
-  line-height: 1.2;
-  width: 100px;
-
-  overflow-wrap: break-word;
-  word-break: break-all;
-}
-
-.no_products {
+/* Imagem do produto */
+.product_img {
   width: 100%;
-  height: 50px;
+  height: 100%;
+  object-fit: cover; /* preenche sem distorcer */
+  object-position: center; /* sempre centralizado */
+  display: block;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  transform-origin: center; /* zoom a partir do centro */
+}
+.product_tile:hover .product_img {
+  transform: scale(1.02);
+  filter: brightness(0.95);
+}
+
+/* Overlay com título (central no hover / sempre visível em touch) */
+.product_overlay {
+  position: absolute;
+  inset: 0; /* cobre todo o tile */
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 12px;
+  text-align: center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0); /* transparente inicialmente */
+  opacity: 0;
+  transform: translateY(8px);
+  transition: background 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
+}
+.product_tile:hover .product_overlay,
+.product_tile:focus-within .product_overlay {
+  background: rgba(0, 0, 0, 0.6); /* escurece p/ legibilidade */
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Título dentro do overlay */
+.product_name {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  white-space: normal; /* permite múltiplas linhas */
+  overflow-wrap: anywhere; /* quebra palavras longas */
+  max-width: 100%;
+}
+
+/* Slide “＋ Adicionar” (aparece ao final quando isAdmin) */
+.add_slide {
+  background: transparent;
+}
+.add_tile {
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  font: inherit;
+  color: #fff;
+  background: linear-gradient(180deg, #1f1f1f, #141414);
+  border: 1px dashed #2b2b2b;
+}
+.add_tile:hover {
+  background: linear-gradient(180deg, #262626, #171717);
+}
+.add_plus {
+  font-size: 28px;
+  line-height: 1;
+}
+
+/* Estado “sem produtos” (ocupa uma linha do trilho) */
+.no_products {
+  padding: 12px 0;
+  opacity: 0.8;
+}
+
+/* Botões (setas) e fades – escondidos por padrão; visíveis só em desktop */
+.carousel_btn,
+.carousel_edge {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .carousel_btn,
+  .carousel_edge {
+    display: block;
+  }
+
+  .carousel_btn {
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    z-index: 3;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+  }
+  .carousel_btn--prev {
+    left: 6px;
+  }
+  .carousel_btn--next {
+    right: 6px;
+  }
+  .carousel_btn:hover {
+    background: rgba(0, 0, 0, 0.75);
+  }
+
+  .carousel_edge {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 24px;
+    z-index: 2;
+  }
+  .carousel_edge--left {
+    left: 0;
+    background: linear-gradient(90deg, #fff, rgba(255, 255, 255, 0));
+  }
+  .carousel_edge--right {
+    right: 0;
+    background: linear-gradient(270deg, #fff, rgba(255, 255, 255, 0));
+  }
+}
+
+/* Mobile/touch: mostrar overlay sempre (sem hover) */
+@media (hover: none) {
+  .product_overlay {
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 1;
+    transform: none;
+  }
 }

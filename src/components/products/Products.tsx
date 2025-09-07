@@ -15,19 +15,19 @@ export type Product = {
 };
 
 export type ProductsProps = {
-  isAdmin?: boolean; // editar
+  isAdmin?: boolean;
 };
 
-export default function Products({ isAdmin }: ProductsProps) {
+export default function Products({ isAdmin = false }: ProductsProps) {
   const { products, prodLoading, prodError } = useProducts();
 
   const [productDialogOpen, setProductDialogOpen] = React.useState(false);
-  const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(
-    null
-  );
+  const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null);
 
   const [newProductId, setNewProductId] = React.useState<string | null>(null);
   const [addProductDialogOpen, setAddProductDialogOpen] = React.useState(false);
+
+  const trackRef = React.useRef<HTMLDivElement | null>(null);
 
   const handleProductClick = (product: Product, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -46,14 +46,9 @@ export default function Products({ isAdmin }: ProductsProps) {
     try {
       await setDoc(
         prodRef,
-        {
-          image: data.image,
-          link: data.link,
-          name: data.name,
-        },
-        { merge: true } // cria se não existir, atualiza os campos sem sobrescrever tudo
+        { image: data.image, link: data.link, name: data.name },
+        { merge: true }
       );
-      console.log("Produto atualizado:", data);
     } catch (err) {
       console.error("Erro ao atualizar produto:", err);
     } finally {
@@ -65,8 +60,6 @@ export default function Products({ isAdmin }: ProductsProps) {
   const handleProductDelete = async (id: string) => {
     try {
       await deleteDoc(doc(db, "products", id));
-      console.log("Produto excluído:", id);
-      // opcional: refetch
     } catch (err) {
       console.error("Erro ao deletar produto:", err);
     } finally {
@@ -88,60 +81,114 @@ export default function Products({ isAdmin }: ProductsProps) {
         link: data.link,
         name: data.name,
       });
-      console.log("Produto criado:", data);
-      // se não usa real-time subscription, pode chamar reload() do hook
     } catch (err) {
       console.error("Erro ao criar produto:", err);
+    } finally {
+      setAddProductDialogOpen(false);
+      setNewProductId(null);
     }
+  };
+
+  const scrollByAmount = (dir: 1 | -1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const amount = Math.round(el.clientWidth * 0.8);
+    el.scrollBy({ left: dir * amount, behavior: "smooth" });
   };
 
   return (
     <section className="products">
       <h3 className="section_title">Produtos</h3>
+
       {prodLoading && <p>Carregando produtos…</p>}
       {prodError && <p>Erro ao carregar produtos: {prodError.message}</p>}
+
       {!prodLoading && !prodError && (
-        <div className="product_carrousel">
-          {products.map((product) => (
-            <div
-              key={product.id}
-              className="product"
-              role="button"
-              tabIndex={0}
-              aria-label={product.name}
-              onClick={(e) => handleProductClick(product, e)}
-            >
-              <img
-                src={product.image}
-                alt={product.name}
-                className="product_image"
-              />
-              <p className="product_description">{product.name}</p>
-            </div>
-          ))}
+        <div className="carousel_wrap">
+          <button
+            type="button"
+            className="carousel_btn carousel_btn--prev"
+            aria-label="Anterior"
+            onClick={() => scrollByAmount(-1)}
+          >
+            ❮
+          </button>
 
-          {!products.length && (
-            <p className="no_products">Nenhum produto cadastrado.</p>
-          )}
-        </div>
-      )}
-
-      {isAdmin && (
-        <div className="add_field">
-          <div className="add" onClick={handleAddProduct}>
-            Adicionar
-          </div>
-          <AddProductDialog
-            open={addProductDialogOpen}
-            onClose={() => {
-              setAddProductDialogOpen(false);
-              setNewProductId(null);
+          <div
+            className="carousel_track product_track"
+            ref={trackRef}
+            tabIndex={0}
+            aria-label="Carrossel de produtos"
+            onKeyDown={(e) => {
+              if (e.key === "ArrowRight") scrollByAmount(1);
+              if (e.key === "ArrowLeft") scrollByAmount(-1);
             }}
-            socialId={newProductId!}
-            onCreate={handleCreateProduct}
-          />
+          >
+            {products.map((product) => (
+              <div
+                key={product.id}
+                className="product_slide"
+                role="button"
+                tabIndex={0}
+                aria-label={product.name}
+                onClick={(e) => handleProductClick(product, e)}
+                onKeyDown={(e) => {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  if (e.key === "Enter" || e.key === " ") handleProductClick(product, e as any);
+                }}
+              >
+                <div className="product_tile">
+                  <img src={product.image} alt={product.name} className="product_img" />
+                  <div className="product_overlay">
+                    <span className="product_name">{product.name}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {isAdmin && (
+              <button
+                type="button"
+                className="product_slide add_slide"
+                onClick={handleAddProduct}
+                aria-label="Adicionar produto"
+                title="Adicionar produto"
+              >
+                <div className="add_tile">
+                  <span className="add_plus">＋</span>
+                  <span>Adicionar</span>
+                </div>
+              </button>
+            )}
+
+            {!products.length && !isAdmin && (
+              <p className="no_products">Nenhum produto cadastrado.</p>
+            )}
+          </div>
+
+          <button
+            type="button"
+            className="carousel_btn carousel_btn--next"
+            aria-label="Próximo"
+            onClick={() => scrollByAmount(1)}
+          >
+            ❯
+          </button>
+
+          <div className="carousel_edge carousel_edge--left" aria-hidden="true" />
+          <div className="carousel_edge carousel_edge--right" aria-hidden="true" />
         </div>
       )}
+
+      <AddProductDialog
+        open={addProductDialogOpen}
+        onClose={() => {
+          setAddProductDialogOpen(false);
+          setNewProductId(null);
+        }}
+        socialId={newProductId ?? ""}
+        onCreate={handleCreateProduct}
+      />
 
       <ProductDialog
         open={productDialogOpen}

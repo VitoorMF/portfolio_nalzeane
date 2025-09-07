@@ -10,6 +10,9 @@ import Products from "../../components/products/Products";
 import Contact from "../../components/contact/Contact";
 import { useDescription, type Description } from "../../hooks/useDescription";
 import { useState, useEffect } from "react";
+import ScrollTopFab from "../../components/scroll_top_fab/ScrollTopFab";
+
+import arrowUp from "../../assets/icons/favicon.jpg";
 
 function HomePage() {
   const { description, loading, error } = useDescription();
@@ -35,7 +38,7 @@ function HomePage() {
       </div>
 
       <div className="body">
-        <h1 className="title">Nalzeane Normanha</h1>
+        <h1 className="title">Nana Normanha</h1>
         <h2 className="subtitle">
           {loading ? (
             <p>Carregando...</p>
@@ -57,6 +60,8 @@ function HomePage() {
 
         <Contact />
       </div>
+
+      <ScrollTopFab iconSrc={arrowUp} threshold={300} title="Voltar ao topo" />
 
       <footer className="footer">
         <div className="line"></div>

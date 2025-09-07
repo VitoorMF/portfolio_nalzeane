@@ -73,7 +73,7 @@ interface LinksProps {
 }
 
 function Links({ isAdmin = false }: LinksProps) {
-  const REQUIRED_IDS = ["whatsapp", "instagram", "tiktok", "linkedin"];
+  const REQUIRED_IDS = ["instagram", "tiktok", "linkedin"];
 
   const { socials, loading, error } = useSocialLinks();
   const [linkDialogOpen, setLinkDialogOpen] = React.useState(false);

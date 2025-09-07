@@ -8,11 +8,11 @@ import Products from "../../components/products/Products";
 import Links from "../../components/links/Links";
 
 import "./AdminPage.css";
-import VideoCarrousel from "../../components/video_carroussel/VideoCarroussel";
 import { EditField } from "../../components/edit_field/EditField";
 import { EditBio } from "../../components/edit_bio/EditBio";
 import { EditNumber } from "../../components/edit_field/EditNumber";
 import { EditEmail } from "../../components/edit_field/EditEmail";
+import VideosGrid from "../../components/videos_grid/VideosGrid";
 
 export function AdminPage() {
   const navigate = useNavigate();
@@ -38,7 +38,8 @@ export function AdminPage() {
       <Links isAdmin={true} />
       <Partners isAdmin={true} />
       <Products isAdmin={true} />
-      <VideoCarrousel isAdmin={true} />
+      <VideosGrid isAdmin />
+
 
       <button onClick={handleLogout}>Logout</button>
     </div>

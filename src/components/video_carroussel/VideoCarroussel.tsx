@@ -1,12 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import "./VideoCarroussel.css";
 import { getDownloadURL, getStorage, listAll, ref } from "firebase/storage";
-import AddVideoDialog from "../dialogs/addVideoDialog";
 
 function VideoCarrousel({ isAdmin = false }) {
   const [videoList, setVideoList] = useState<string[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [addVideoDialogOpen, setAddVideoDialogOpen] = useState(false);
 
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const storage = getStorage();
@@ -16,7 +14,7 @@ function VideoCarrousel({ isAdmin = false }) {
   const fetchVideos = () =>
     listAll(videosFolder)
       .then((res) => Promise.all(res.items.map((i) => getDownloadURL(i))))
-      .then((urls) => setVideoList(urls))
+      .then((urls) => setVideoList(urls.reverse())) // mostra os mais recentes primeiro
       .catch((err) => console.error("Erro listando vídeos:", err));
 
   // carregamento inicial
@@ -47,16 +45,6 @@ function VideoCarrousel({ isAdmin = false }) {
   const handleNext = () =>
     setCurrentIndex((i) => (i === videoList.length - 1 ? 0 : i + 1));
 
-  // abre o diálogo
-  const handleAddClick = () => setAddVideoDialogOpen(true);
-
-  // quando o diálogo terminar o upload com sucesso:
-  const handleCreate = () => {
-    // você pode usar data.src se precisar algo extra
-    fetchVideos(); // recarrega a lista
-    setAddVideoDialogOpen(false); // fecha o diálogo
-  };
-
   return (
     <section className="video_carrousel">
       <div className="video_arrows">
@@ -77,7 +65,13 @@ function VideoCarrousel({ isAdmin = false }) {
               controls
               muted
               loop
+              autoPlay
               playsInline
+              onClick={() => {
+                if (isAdmin) {
+                  console.log("Clicou no vídeo", src);
+                }
+              }}
             />
           ))}
         </div>
@@ -85,18 +79,6 @@ function VideoCarrousel({ isAdmin = false }) {
           ›
         </button>
       </div>
-
-      <AddVideoDialog
-        open={addVideoDialogOpen}
-        onClose={() => setAddVideoDialogOpen(false)}
-        onCreate={handleCreate}
-      />
-
-      {isAdmin && (
-        <div className="add_field" onClick={handleAddClick}>
-          <div className="add">Adicionar</div>
-        </div>
-      )}
     </section>
   );
 }
