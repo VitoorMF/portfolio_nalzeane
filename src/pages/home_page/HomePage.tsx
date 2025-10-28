@@ -38,7 +38,7 @@ function HomePage() {
       </div>
 
       <div className="body">
-        <h1 className="title">Nana Normanha</h1>
+        <h1 className="title">Naná Normanha</h1>
         <h2 className="subtitle">
           {loading ? (
             <p>Carregando...</p>

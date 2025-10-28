@@ -73,7 +73,7 @@
   background: rgba(0, 0, 0, 0);
   opacity: 0;
   transform: translateY(8px);
-  transition: background 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
+  transition: opacity 0.25s ease;
 }
 .partner_tile:hover .partner_overlay {
   background: rgba(0, 0, 0, 0.55);
