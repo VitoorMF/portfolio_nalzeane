@@ -83,6 +83,15 @@ function Links({ isAdmin = false }: LinksProps) {
   const [newLinkId, setNewLinkId] = React.useState<string | null>(null);
   const [addLinkDialogOpen, setAddLinkDialogOpen] = React.useState(false);
   const [items, setItems] = React.useState<SocialLinkProps[]>([]);
+  const lastNames = new Set(["instagram", "tiktok"]);
+
+  const orderedItems = [
+    // primeiro todos que não são insta/tiktok
+    ...items.filter(s => !lastNames.has((s.name || "").toLowerCase())),
+    // depois insta/tiktok (mantém a ordem entre eles)
+    ...items.filter(s => lastNames.has((s.name || "").toLowerCase())),
+  ];
+
 
   React.useEffect(() => {
     setItems(socials);
@@ -166,7 +175,7 @@ function Links({ isAdmin = false }: LinksProps) {
       <h3 className="section_title">Meus Links</h3>
 
       <div className="link_group">
-        {items.map((s) => (
+        {orderedItems.map((s) => (
           <SocialLink
             key={s.id ?? s.name}
             id={s.id}
