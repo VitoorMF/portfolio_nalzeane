@@ -5,6 +5,12 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import {
+  adminDangerButtonSx,
+  adminDialogSx,
+  adminPrimaryButtonSx,
+  adminSecondaryButtonSx,
+} from "./adminDialogStyles";
 
 interface FormValues {
   url: string;
@@ -32,10 +38,12 @@ export default function FormDialog({
 }: FormDialogProps) {
   const [url, setUrl] = React.useState(socialUrl);
   const [name, setName] = React.useState(socialName);
+  const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     setUrl(socialUrl);
     setName(socialName);
+    setError(null);
   }, [socialUrl, socialName]);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -43,19 +51,20 @@ export default function FormDialog({
     const trimmedUrl = url.trim();
     const trimmedName = name.trim();
     if (!trimmedName) {
-      console.warn("Nome é obrigatório.");
+      setError("Nome é obrigatório.");
       return;
     }
     if (!trimmedUrl) {
-      console.warn("URL é obrigatória.");
+      setError("URL é obrigatória.");
       return;
     }
+    setError(null);
     onSubmit?.({ url: trimmedUrl, name: trimmedName });
     onClose();
   };
 
   return (
-    <Dialog fullWidth open={open} onClose={onClose}>
+    <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose} sx={adminDialogSx}>
       <DialogTitle>Editar</DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
         <form onSubmit={handleSubmit} noValidate>
@@ -67,9 +76,10 @@ export default function FormDialog({
             label="URL"
             type="url"
             fullWidth
-            variant="standard"
+            variant="outlined"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
+            error={Boolean(error)}
           />
           <TextField
             required
@@ -78,9 +88,11 @@ export default function FormDialog({
             label="Name"
             type="text"
             fullWidth
-            variant="standard"
+            variant="outlined"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            error={Boolean(error)}
+            helperText={error ?? " "}
           />
 
           <DialogActions sx={{ justifyContent: "space-between" }}>
@@ -89,6 +101,8 @@ export default function FormDialog({
                 <Button
                   type="button"
                   color="error"
+                  variant="outlined"
+                  sx={adminDangerButtonSx}
                   onClick={() => {
                     onDelete?.();
                   }}
@@ -98,10 +112,10 @@ export default function FormDialog({
               )}
             </div>
             <div>
-              <Button type="button" onClick={onClose}>
+              <Button type="button" onClick={onClose} variant="outlined" sx={adminSecondaryButtonSx}>
                 Fechar
               </Button>
-              <Button type="submit">Alterar</Button>
+              <Button type="submit" variant="contained" sx={adminPrimaryButtonSx}>Alterar</Button>
             </div>
           </DialogActions>
         </form>

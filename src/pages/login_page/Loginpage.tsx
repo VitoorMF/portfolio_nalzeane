@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import "./LoginPage.css";
 import { signInWithEmailAndPassword } from "firebase/auth";
-// Make sure the path below points to your actual firebase config file that exports 'auth'
 import { auth } from "../../../firebase/config.ts";
 import { useNavigate } from "react-router-dom";
 import eye from "../../assets/icons/eye.svg";
@@ -11,47 +10,81 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setErrorMessage("");
+    setIsSubmitting(true);
+
     try {
-      await signInWithEmailAndPassword(auth, email, senha);
+      await signInWithEmailAndPassword(auth, email.trim(), senha);
       navigate("/admin");
     } catch (error) {
-      alert(`${(error as Error).message}`);
+      setErrorMessage("Não foi possível entrar. Verifique e-mail e senha.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="login-container">
-      <input
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-      />
+    <main className="login-page">
+      <form className="login-container" onSubmit={handleLogin}>
+        <h1 className="login-title">Acesso Admin</h1>
+        <p className="login-subtitle">Entre com suas credenciais para editar o site.</p>
 
-      <div className="passwordwrapper">
+        <label className="login-label" htmlFor="email">
+          E-mail
+        </label>
         <input
-          type={showPassword ? "text" : "password"}
-          value={senha}
-          onChange={(e) => setSenha(e.target.value)}
-          placeholder="Senha"
+          id="email"
+          type="email"
+          autoComplete="email"
+          inputMode="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="seu@email.com"
+          required
         />
-        <button
-          className="togglebtn"
-          onClick={() => setShowPassword((prev) => !prev)}
-        >
-          <img
-            className="toggleicon"
-            src={showPassword ? eyeSlash : eye}
-            alt="Toggle password visibility"
+
+        <label className="login-label" htmlFor="password">
+          Senha
+        </label>
+        <div className="passwordwrapper">
+          <input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="current-password"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+            placeholder="Sua senha"
+            required
           />
+          <button
+            className="togglebtn"
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+            title={showPassword ? "Ocultar senha" : "Mostrar senha"}
+          >
+            <img
+              className="toggleicon"
+              src={showPassword ? eyeSlash : eye}
+              alt=""
+              aria-hidden="true"
+            />
+          </button>
+        </div>
+
+        {errorMessage && <p className="login-error">{errorMessage}</p>}
+
+        <button className="sendbtn" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Entrando..." : "Entrar"}
         </button>
-      </div>
-      <button className="sendbtn" onClick={handleLogin}>
-        Entrar
-      </button>
-    </div>
+      </form>
+    </main>
   );
 }
 

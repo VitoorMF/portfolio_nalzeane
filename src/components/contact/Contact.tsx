@@ -31,6 +31,11 @@ function Contact() {
     }
   }, [num]);
 
+  const normalizedNumber = value.replace(/\D/g, "");
+  const whatsappHref = normalizedNumber ? `https://wa.me/55${normalizedNumber}` : "#";
+  const phoneHref = normalizedNumber ? `tel:+55${normalizedNumber}` : "#";
+  const isContactUnavailable = loading || Boolean(error) || !normalizedNumber;
+
   return (
     <section className="contact">
       <h3 className="section_title">Contato</h3>
@@ -42,47 +47,41 @@ function Contact() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <div className="send_btn" onClick={handleSend}>
+        <button type="button" className="send_btn" onClick={handleSend}>
           Enviar
-        </div>
+        </button>
       </div>
       <span>ou</span>
       <div className="contacts_row">
         <a
-          href={`https://wa.me/55${
-            loading ? (
-              <p>Carregando...</p>
-            ) : error ? (
-              <p>Erro: {error.message}</p>
-            ) : (
-              value
-            )
-          }`}
+          href={whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
+          aria-disabled={isContactUnavailable}
+          onClick={(e) => {
+            if (isContactUnavailable) e.preventDefault();
+          }}
         >
           <div className="contact_btn whatsapp">
             <img src={whiteWhatsappIcon} alt="WhatsApp" />
           </div>
         </a>
         <a
-          href={`tel:+55${
-            loading ? (
-              <p>Carregando...</p>
-            ) : error ? (
-              <p>Erro: {error.message}</p>
-            ) : (
-              value
-            )
-          }`}
+          href={phoneHref}
           target="_blank"
           rel="noopener noreferrer"
+          aria-disabled={isContactUnavailable}
+          onClick={(e) => {
+            if (isContactUnavailable) e.preventDefault();
+          }}
         >
           <div className="contact_btn phone">
             <img src={phoneIcon} alt="Phone" />
           </div>
         </a>
       </div>
+      {loading && <p>Carregando contato...</p>}
+      {error && <p>Erro ao carregar contato: {error.message}</p>}
     </section>
   );
 }

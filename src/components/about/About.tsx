@@ -1,6 +1,16 @@
 import "./About.css";
 import { useBio, type Bio } from "../../hooks/useBio";
 
+function sanitizeBio(raw: string) {
+  // Escapa tudo e reabilita apenas tags permitidas para destaque/linhas.
+  return raw
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/&lt;(\/?strong)&gt;/gi, "<$1>")
+    .replace(/&lt;br\s*\/?&gt;/gi, "<br />");
+}
+
 function About() {
   const { bio, loading, error } = useBio();
   const profile: Bio | undefined = bio[0];
@@ -14,7 +24,7 @@ function About() {
       <p
         className="about_text"
         dangerouslySetInnerHTML={{
-          __html: profile?.bio ?? "",
+          __html: sanitizeBio(profile?.bio ?? ""),
         }}
       />
     </section>

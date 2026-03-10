@@ -20,17 +20,18 @@
 /* Wrapper do carrossel (para setas e fades) */
 .carousel_wrap {
   position: relative;
+  width: min(100%, 960px);
   margin-inline: auto;
 }
 
 /* Trilho rolável com snap + swipe */
 .carousel_track {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-padding-inline: 16px;
-  padding: 8px 16px 12px;
+  padding: 10px 20px 14px;
   overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; /* Firefox */
@@ -58,11 +59,18 @@
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
   background: #0f0f0f;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14);
   cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product_tile:hover,
+.product_tile:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.2);
 }
 
 /* Imagem do produto */
@@ -100,6 +108,14 @@
   background: rgba(0, 0, 0, 0.6); /* escurece p/ legibilidade */
   opacity: 1;
   transform: translateY(0);
+}
+
+.product_slide:focus-visible {
+  outline: none;
+}
+
+.product_slide:focus-visible .product_tile {
+  box-shadow: var(--focus-ring), 0 14px 30px rgba(0, 0, 0, 0.2);
 }
 
 /* Título dentro do overlay */
@@ -157,15 +173,18 @@
     top: 50%;
     translate: 0 -50%;
     z-index: 3;
-    border: none;
-    width: 36px;
-    height: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    width: 42px;
+    height: 42px;
     border-radius: 999px;
-    background: rgba(0, 0, 0, 0.55);
+    background: rgba(24, 24, 24, 0.85);
     color: #fff;
     cursor: pointer;
     display: grid;
     place-items: center;
+    font-size: 20px;
+    line-height: 1;
+    transition: transform 0.2s ease, background-color 0.2s ease;
   }
   .carousel_btn--prev {
     left: 6px;
@@ -174,7 +193,13 @@
     right: 6px;
   }
   .carousel_btn:hover {
-    background: rgba(0, 0, 0, 0.75);
+    transform: scale(1.04);
+    background: rgba(24, 24, 24, 0.95);
+  }
+
+  .carousel_btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
   }
 
   .carousel_edge {
@@ -194,4 +219,22 @@
     opacity: 1;
     transform: none;
   }
+}
+
+.products--admin .carousel_wrap--admin {
+  width: 100%;
+}
+
+.products--admin .carousel_track {
+  padding-inline: 8px;
+}
+
+.products--admin .product_slide {
+  flex-basis: clamp(150px, 19vw, 210px);
+}
+
+.products--admin .product_overlay {
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 1;
+  transform: none;
 }

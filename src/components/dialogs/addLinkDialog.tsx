@@ -6,6 +6,11 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import {
+  adminDialogSx,
+  adminPrimaryButtonSx,
+  adminSecondaryButtonSx,
+} from "./adminDialogStyles";
 
 export interface NewLinkValues {
   id: string;
@@ -55,7 +60,7 @@ export default function AddLinkDialog({
   }, [open]);
 
   return (
-    <Dialog fullWidth open={open} onClose={onClose}>
+    <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose} sx={adminDialogSx}>
       <DialogTitle>Adicionar Link</DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit} noValidate>
@@ -65,7 +70,7 @@ export default function AddLinkDialog({
             name="name"
             label="Nome"
             fullWidth
-            variant="standard"
+            variant="outlined"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -73,19 +78,19 @@ export default function AddLinkDialog({
             required
             margin="dense"
             name="src"
-            label="Src"
+            label="URL"
             fullWidth
-            variant="standard"
+            variant="outlined"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
           />
 
           {error && <div style={{ color: "red", marginTop: 8 }}>{error}</div>}
           <DialogActions sx={{ paddingTop: 2 }}>
-            <Button type="button" onClick={onClose}>
+            <Button type="button" onClick={onClose} variant="outlined" sx={adminSecondaryButtonSx}>
               Cancelar
             </Button>
-            <Button type="submit">Criar</Button>
+            <Button type="submit" variant="contained" sx={adminPrimaryButtonSx}>Criar</Button>
           </DialogActions>
         </form>
       </DialogContent>

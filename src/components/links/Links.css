@@ -1,8 +1,8 @@
 .link_group {
   margin-top: 10px;
-  padding-bottom: 20px;
+  padding-bottom: 24px;
   display: grid;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
 }
 
@@ -11,24 +11,58 @@
   height: 70px;
   width: 100%;
   background-color: #fafafa;
-  border-radius: 10px;
+  border: 1px solid #eceef2;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.link_btn:hover {
+  background: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.18);
+}
+
+.link_btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring), 0 12px 26px rgba(0, 0, 0, 0.18);
+}
+
 .link_icon {
   position: absolute;
   left: 16px;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
 }
 
 .link_btn_text {
   color: #212121;
   font-weight: 700;
   text-align: center;
+  letter-spacing: 0.01em;
+}
+
+.links--admin .link_group {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.links--admin .link_btn {
+  min-height: 76px;
+  justify-content: flex-start;
+  padding: 0 16px 0 48px;
+  box-sizing: border-box;
+}
+
+.links--admin .link_icon {
+  left: 14px;
+}
+
+.links--admin .link_btn_text {
+  text-align: left;
 }

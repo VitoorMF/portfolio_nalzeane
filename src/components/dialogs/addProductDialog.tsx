@@ -6,6 +6,11 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import {
+  adminDialogSx,
+  adminPrimaryButtonSx,
+  adminSecondaryButtonSx,
+} from "./adminDialogStyles";
 
 export interface NewProductValues {
   id: string;
@@ -59,7 +64,7 @@ export default function AddProductDialog({
   }, [open]);
 
   return (
-    <Dialog fullWidth open={open} onClose={onClose}>
+    <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose} sx={adminDialogSx}>
       <DialogTitle>Adicionar Produto</DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit} noValidate>
@@ -69,7 +74,7 @@ export default function AddProductDialog({
             name="id"
             label="ID"
             fullWidth
-            variant="standard"
+            variant="outlined"
             value={socialId}
           />
           <TextField
@@ -78,7 +83,7 @@ export default function AddProductDialog({
             name="image"
             label="Imagem (URL)"
             fullWidth
-            variant="standard"
+            variant="outlined"
             value={image}
             onChange={(e) => setImage(e.target.value)}
           />
@@ -88,7 +93,7 @@ export default function AddProductDialog({
             name="link"
             label="Link"
             fullWidth
-            variant="standard"
+            variant="outlined"
             value={link}
             onChange={(e) => setLink(e.target.value)}
           />
@@ -98,16 +103,16 @@ export default function AddProductDialog({
             name="name"
             label="Nome"
             fullWidth
-            variant="standard"
+            variant="outlined"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
           {error && <div style={{ color: "red", marginTop: 8 }}>{error}</div>}
           <DialogActions sx={{ paddingTop: 2 }}>
-            <Button type="button" onClick={onClose}>
+            <Button type="button" onClick={onClose} variant="outlined" sx={adminSecondaryButtonSx}>
               Cancelar
             </Button>
-            <Button type="submit">Criar</Button>
+            <Button type="submit" variant="contained" sx={adminPrimaryButtonSx}>Criar</Button>
           </DialogActions>
         </form>
       </DialogContent>

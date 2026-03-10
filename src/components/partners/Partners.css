@@ -1,6 +1,6 @@
 /* wrapper com setas e fades */
 .carousel_wrap {
-  max-width: 90vw;
+  width: min(100%, 960px);
   position: relative;
   margin-inline: auto;
 }
@@ -8,11 +8,11 @@
 /* trilho rolável horizontal com snap */
 .carousel_track {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-padding-inline: 16px;
-  padding: 8px 16px 12px;
+  padding: 10px 20px 14px;
   overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; /* Firefox */
@@ -38,13 +38,28 @@
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
   background: #fff; /* fundo branco p/ logos com transparência */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  border: 1px solid #eceef2;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.14);
   cursor: pointer;
   display: grid;
   place-items: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.partner_tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.2);
+}
+
+.partner_slide:focus-visible {
+  outline: none;
+}
+
+.partner_slide:focus-visible .partner_tile {
+  box-shadow: var(--focus-ring), 0 14px 30px rgba(0, 0, 0, 0.2);
 }
 
 /* imagem da logo centralizada e com folga */
@@ -140,15 +155,18 @@
   top: 50%;
   translate: 0 -50%;
   z-index: 3;
-  border: none;
-  width: 36px;
-  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  width: 42px;
+  height: 42px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(24, 24, 24, 0.85);
   color: #fff;
   cursor: pointer;
   display: grid;
   place-items: center;
+  font-size: 20px;
+  line-height: 1;
+  transition: transform 0.2s ease, background-color 0.2s ease;
 }
 .carousel_btn--prev {
   left: 6px;
@@ -157,7 +175,35 @@
   right: 6px;
 }
 .carousel_btn:hover {
-  background: rgba(0, 0, 0, 0.75);
+  transform: scale(1.04);
+  background: rgba(24, 24, 24, 0.95);
+}
+
+.carousel_btn:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.partners--admin .carousel_wrap--admin {
+  width: 100%;
+}
+
+.partners--admin .carousel_track {
+  padding-inline: 8px;
+}
+
+.partners--admin .partner_slide {
+  flex-basis: clamp(150px, 19vw, 210px);
+}
+
+.partners--admin .partner_overlay {
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 1;
+  transform: none;
+}
+
+.partners--admin .partner_delete_btn {
+  opacity: 1;
 }
 
 /* mobile: overlay sempre visível para mostrar o nome */

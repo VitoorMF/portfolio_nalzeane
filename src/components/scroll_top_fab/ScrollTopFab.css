@@ -7,15 +7,16 @@
   width: 50px;
   height: 50px;
   border: none;
-  border-radius: 20%;
+  border-radius: 14px;
   padding: 0;
 
   display: grid;
   place-items: center;
 
-  background: transparent;
+  background: rgba(18, 18, 18, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(6px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
 
   cursor: pointer;
   transform: translateY(16px) scale(0.9);
@@ -32,14 +33,19 @@
   transform: translateY(0) scale(1.05);
 }
 
+.scrolltop_fab:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring), 0 10px 24px rgba(0, 0, 0, 0.22);
+}
+
 .scrolltop_fab:active {
   transform: translateY(0) scale(0.98);
 }
 
 .scrolltop_fab img {
-  width: 50px;
-  height: 50px;
-  border-radius: 20%;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   display: block;
   pointer-events: none;
 }

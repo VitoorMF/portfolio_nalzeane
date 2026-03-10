@@ -97,14 +97,14 @@ export default function Products({ isAdmin = false }: ProductsProps) {
   };
 
   return (
-    <section className="products">
+    <section className={`products ${isAdmin ? "products--admin" : ""}`}>
       <h3 className="section_title">Produtos</h3>
 
       {prodLoading && <p>Carregando produtos…</p>}
       {prodError && <p>Erro ao carregar produtos: {prodError.message}</p>}
 
       {!prodLoading && !prodError && (
-        <div className="carousel_wrap">
+        <div className={`carousel_wrap ${isAdmin ? "carousel_wrap--admin" : ""}`}>
           <button
             type="button"
             className="carousel_btn carousel_btn--prev"

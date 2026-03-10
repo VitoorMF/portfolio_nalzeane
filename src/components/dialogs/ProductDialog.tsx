@@ -4,6 +4,12 @@ import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import {
+  adminDangerButtonSx,
+  adminDialogSx,
+  adminPrimaryButtonSx,
+  adminSecondaryButtonSx,
+} from "./adminDialogStyles";
 
 export interface ProductValues {
   id: string;
@@ -77,7 +83,7 @@ export default function ProductDialog({
   };
 
   return (
-    <Dialog fullWidth open={open} onClose={onClose}>
+    <Dialog fullWidth maxWidth="sm" open={open} onClose={onClose} sx={adminDialogSx}>
       <DialogTitle>Editar Produto</DialogTitle>
       <DialogContent sx={{ paddingBottom: 0 }}>
         <form onSubmit={handleSubmit} noValidate>
@@ -87,7 +93,7 @@ export default function ProductDialog({
             name="id"
             label="ID"
             fullWidth
-            variant="standard"
+            variant="outlined"
             value={id}
             onChange={(e) => setId(e.target.value)}
           />
@@ -97,7 +103,7 @@ export default function ProductDialog({
             name="image"
             label="Imagem"
             fullWidth
-            variant="standard"
+            variant="outlined"
             value={image}
             onChange={(e) => setImage(e.target.value)}
           />
@@ -107,7 +113,7 @@ export default function ProductDialog({
             name="link"
             label="Link"
             fullWidth
-            variant="standard"
+            variant="outlined"
             value={link}
             onChange={(e) => setLink(e.target.value)}
           />
@@ -117,7 +123,7 @@ export default function ProductDialog({
             name="nome"
             label="Nome"
             fullWidth
-            variant="standard"
+            variant="outlined"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -135,15 +141,17 @@ export default function ProductDialog({
               color="error"
               onClick={handleDelete}
               disabled={!onDelete || !id}
+              variant="outlined"
+              sx={adminDangerButtonSx}
             >
               Excluir
             </Button>
 
             <div>
-              <Button type="button" onClick={onClose}>
+              <Button type="button" onClick={onClose} variant="outlined" sx={adminSecondaryButtonSx}>
                 Fechar
               </Button>
-              <Button type="submit">Confirmar</Button>
+              <Button type="submit" variant="contained" sx={adminPrimaryButtonSx}>Confirmar</Button>
             </div>
           </div>
         </form>

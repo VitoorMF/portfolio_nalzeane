@@ -72,14 +72,14 @@ function Partners({ isAdmin = false }: PartnersProps) {
   };
 
   return (
-    <section className="partners">
+    <section className={`partners ${isAdmin ? "partners--admin" : ""}`}>
       <h3 className="section_title">Parceiros</h3>
 
       {partnersLoading && <p>Carregando parceiros…</p>}
       {partnersError && <p>Erro ao carregar parceiros: {partnersError.message}</p>}
 
       {!partnersLoading && !partnersError && (
-        <div className="carousel_wrap">
+        <div className={`carousel_wrap ${isAdmin ? "carousel_wrap--admin" : ""}`}>
           <button
             type="button"
             className="carousel_btn carousel_btn--prev"

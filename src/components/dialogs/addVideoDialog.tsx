@@ -16,9 +16,15 @@ import { CloudUpload, Delete as DeleteIcon } from "@mui/icons-material";
 import {
   getStorage,
   ref,
+  uploadBytes,
   uploadBytesResumable,
   type UploadTask,
 } from "firebase/storage";
+import {
+  adminDialogSx,
+  adminPrimaryButtonSx,
+  adminSecondaryButtonSx,
+} from "./adminDialogStyles";
 
 export interface NewVideoValues {
   src: string;
@@ -35,6 +41,51 @@ interface AddVideoDialogProps {
   onCreate?: (data: NewVideoValues) => void;
   maxSizeMB?: number; // default 250
   accept?: string[]; // ex: ["video/mp4","video/webm","video/quicktime"]
+}
+
+async function createVideoThumbnail(file: File): Promise<Blob | null> {
+  const objectUrl = URL.createObjectURL(file);
+  const video = document.createElement("video");
+  video.src = objectUrl;
+  video.muted = true;
+  video.playsInline = true;
+  video.preload = "metadata";
+
+  try {
+    await new Promise<void>((resolve, reject) => {
+      video.onloadedmetadata = () => resolve();
+      video.onerror = () => reject(new Error("Falha ao ler metadados do video."));
+    });
+
+    const seekTime = Number.isFinite(video.duration) && video.duration > 1 ? 1 : 0;
+    video.currentTime = seekTime;
+
+    await new Promise<void>((resolve, reject) => {
+      video.onseeked = () => resolve();
+      video.onerror = () => reject(new Error("Falha ao posicionar video para thumbnail."));
+    });
+
+    const maxWidth = 540;
+    const ratio = video.videoWidth / video.videoHeight || 9 / 16;
+    const width = Math.min(video.videoWidth || maxWidth, maxWidth);
+    const height = Math.max(1, Math.round(width / ratio));
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.drawImage(video, 0, 0, width, height);
+
+    return await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob((blob) => resolve(blob), "image/jpeg", 0.82);
+    });
+  } catch {
+    return null;
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+    video.src = "";
+  }
 }
 
 export default function AddVideoDialog({
@@ -147,6 +198,8 @@ export default function AddVideoDialog({
           .replace(/-+/g, "-") || `video.${ext}`;
       const filename = `${Date.now()}-${safeName}`;
       const videoRef = ref(storage, `videos/${filename}`);
+      const thumbBlob = await createVideoThumbnail(file);
+      const thumbRef = ref(storage, `videos_thumbs/${filename}.jpg`);
 
       const task = uploadBytesResumable(videoRef, file, {
         contentType: file.type,
@@ -173,6 +226,15 @@ export default function AddVideoDialog({
         },
         async () => {
           // terminou com sucesso
+          if (thumbBlob) {
+            try {
+              await uploadBytes(thumbRef, thumbBlob, {
+                contentType: "image/jpeg",
+              });
+            } catch (thumbErr) {
+              console.error("Falha ao enviar thumbnail:", thumbErr);
+            }
+          }
 
           // mantém compatibilidade: envia ao menos `src`
           onCreate?.({
@@ -195,7 +257,7 @@ export default function AddVideoDialog({
   };
 
   return (
-    <Dialog fullWidth open={open} onClose={handleClose}>
+    <Dialog fullWidth maxWidth="sm" open={open} onClose={handleClose} sx={adminDialogSx}>
       <DialogTitle>Adicionar vídeo</DialogTitle>
       <DialogContent>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
@@ -205,12 +267,13 @@ export default function AddVideoDialog({
             onDrop={onDrop}
             sx={{
               border: "1px dashed",
-              borderColor: "divider",
+              borderColor: "rgba(255,255,255,0.24)",
               borderRadius: 2,
               p: 3,
               textAlign: "center",
               cursor: "pointer",
-              "&:hover": { bgcolor: "action.hover" },
+              backgroundColor: "rgba(255,255,255,0.02)",
+              "&:hover": { backgroundColor: "rgba(255,255,255,0.05)" },
             }}
             onClick={() =>
               document.getElementById("video-input-hidden")?.click()
@@ -241,8 +304,9 @@ export default function AddVideoDialog({
                 mt: 2,
                 p: 2,
                 border: "1px solid",
-                borderColor: "divider",
+                borderColor: "rgba(255,255,255,0.24)",
                 borderRadius: 2,
+                backgroundColor: "rgba(255,255,255,0.02)",
               }}
             >
               <Stack
@@ -313,24 +377,29 @@ export default function AddVideoDialog({
       </DialogContent>
 
       <DialogActions>
-        {isUploading ? (
-          <Button
-            onClick={() => {
-              if (taskRef.current) taskRef.current.cancel();
-            }}
-          >
-            Cancelar envio
+          {isUploading ? (
+            <Button
+              variant="outlined"
+              sx={adminSecondaryButtonSx}
+              onClick={() => {
+                if (taskRef.current) taskRef.current.cancel();
+              }}
+            >
+              Cancelar envio
+            </Button>
+          ) : (
+          <Button onClick={handleClose} variant="outlined" sx={adminSecondaryButtonSx}>
+            Fechar
           </Button>
-        ) : (
-          <Button onClick={handleClose}>Fechar</Button>
-        )}
-        <Button
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onClick={handleSubmit as any}
-          variant="contained"
-          disabled={!file || isUploading}
-        >
-          Enviar
+          )}
+          <Button
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onClick={handleSubmit as any}
+            variant="contained"
+            sx={adminPrimaryButtonSx}
+            disabled={!file || isUploading}
+          >
+            Enviar
         </Button>
       </DialogActions>
     </Dialog>

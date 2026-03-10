@@ -1,9 +1,13 @@
 :root {
   font-family: "Inter", Avenir, Helvetica, Arial, sans-serif;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #212121;
+  color: rgba(255, 255, 255, 0.9);
+  background-color: #171717;
+  --bg-base: #171717;
+  --bg-elev-1: #222222;
+  --text-main: #f3f4f6;
+  --text-muted: #c7cbd1;
+  --accent-soft: #3ddc97;
+  --focus-ring: 0 0 0 3px rgba(61, 220, 151, 0.35);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -18,8 +22,10 @@ h3 {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(255, 255, 255, 0.06), transparent 28%),
+    radial-gradient(circle at 85% 18%, rgba(61, 220, 151, 0.08), transparent 24%),
+    var(--bg-base);
   min-width: 320px;
   min-height: 100vh;
 }

@@ -171,7 +171,7 @@ function Links({ isAdmin = false }: LinksProps) {
   if (error) return <div>Erro ao carregar links: {error.message}</div>;
 
   return (
-    <section className="links">
+    <section className={`links ${isAdmin ? "links--admin" : ""}`}>
       <h3 className="section_title">Meus Links</h3>
 
       <div className="link_group">

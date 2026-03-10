@@ -32,7 +32,13 @@ function HomePage() {
       <div className="stack">
         <picture>
           <source srcSet={nanaDesktop} media="(min-width: 800px)" />
-          <img src={nana} alt="Foto de perfil" />
+          <img
+            src={nana}
+            alt="Foto de perfil"
+            width={430}
+            height={433}
+            fetchPriority="high"
+          />
         </picture>
         <div className="gradient"></div>
       </div>
@@ -41,9 +47,9 @@ function HomePage() {
         <h1 className="title">Naná Normanha</h1>
         <h2 className="subtitle">
           {loading ? (
-            <p>Carregando...</p>
+            <span>Carregando...</span>
           ) : error ? (
-            <p>Erro: {error.message}</p>
+            <span>Erro: {error.message}</span>
           ) : (
             value
           )}

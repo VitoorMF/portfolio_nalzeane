@@ -4,6 +4,11 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { DialogContentText } from "@mui/material";
+import {
+  adminDangerButtonSx,
+  adminDialogSx,
+  adminSecondaryButtonSx,
+} from "./adminDialogStyles";
 
 interface DeleteDialogProps {
   open: boolean;
@@ -17,17 +22,19 @@ export default function DeletDialog({
   onConfirm,
 }: DeleteDialogProps) {
   return (
-    <Dialog fullWidth open={open} onClose={onClose}>
+    <Dialog fullWidth maxWidth="xs" open={open} onClose={onClose} sx={adminDialogSx}>
       <DialogTitle id="alert-dialog-title">{"Excluir Parceiro?"}</DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
+        <DialogContentText id="alert-dialog-description" sx={{ color: "#cbd5e1" }}>
           Você tem certeza que deseja excluir este parceiro? Esta ação não pode
           ser desfeita.
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancelar</Button>
-        <Button autoFocus onClick={onConfirm}>
+        <Button onClick={onClose} variant="outlined" sx={adminSecondaryButtonSx}>
+          Cancelar
+        </Button>
+        <Button autoFocus onClick={onConfirm} variant="outlined" sx={adminDangerButtonSx}>
           Excluir
         </Button>
       </DialogActions>

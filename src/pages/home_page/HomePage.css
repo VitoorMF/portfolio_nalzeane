@@ -1,4 +1,5 @@
 #root {
+  width: 100%;
   margin: 0 auto;
   text-align: center;
   display: flex;
@@ -7,15 +8,17 @@
 }
 
 .body {
-  max-width: 1200px;
+  width: min(100%, 980px);
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 section {
-  margin: 20px;
+  margin: 32px 0;
 }
 
 footer {
-  margin: 20px;
+  margin: 24px 20px;
 }
 
 .stack {
@@ -62,33 +65,36 @@ footer {
 
 /* section title */
 .title {
-  font-size: 32px;
+  font-size: clamp(2rem, 4.6vw, 2.8rem);
   margin: 0;
   font-weight: 700;
   color: #fafafa;
+  letter-spacing: 0.01em;
 }
 
 .subtitle {
   font-size: 16px;
-  color: #a1a1aa;
+  color: #d1d5db;
   font-weight: 500;
-  margin: 0px;
+  margin: 2px 0 0;
+  line-height: 1.45;
 }
 
 .section_title {
   font-weight: 700;
-  font-style: 16px;
+  font-size: 1.08rem;
   color: #fafafa;
   width: 100%;
   text-align: left;
-  margin: 0;
+  margin: 0 0 10px;
+  letter-spacing: 0.01em;
 }
 
 .footer {
-  margin-top: 40px;
+  margin-top: 56px;
   text-align: center;
   font-size: 14px;
-  color: #a1a1aa;
+  color: #c2c8cf;
 }
 
 .footer .line {

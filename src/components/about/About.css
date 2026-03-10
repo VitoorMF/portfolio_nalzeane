@@ -1,5 +1,8 @@
 .about_text {
-  margin: 5px 0;
+  margin: 6px 0;
   text-align: start;
   white-space: pre-wrap;
+  color: #e4e7ec;
+  line-height: 1.7;
+  font-size: 1rem;
 }
